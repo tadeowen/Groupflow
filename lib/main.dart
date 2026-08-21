@@ -21,7 +21,7 @@ class GroupFlowApp extends ConsumerWidget {
   const GroupFlowApp({super.key, this.firebaseError});
   final Object? firebaseError;
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) => MaterialApp(
     title: 'GroupFlow',
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light(),
@@ -36,7 +36,7 @@ class GroupFlowApp extends ConsumerWidget {
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authStateProvider);
     return auth.when(
       data: (user) => user == null ? const AuthScreen() : const HomeShell(),
