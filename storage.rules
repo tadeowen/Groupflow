@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /groups/{groupId}/{allPaths=**} {
+      function activeMember() {
+        return request.auth != null &&
+          firestore.exists(/databases/(default)/documents/groupMembers/$(groupId + '_' + request.auth.uid)) &&
+          firestore.get(/databases/(default)/documents/groupMembers/$(groupId + '_' + request.auth.uid)).data.status == 'active';
+      }
+      allow read: if activeMember();
+      allow write: if activeMember() && request.resource.size < 25 * 1024 * 1024;
+    }
+  }
+}
