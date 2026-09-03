@@ -26,10 +26,10 @@ class TasksPage extends ConsumerWidget {
                     .toList(),
               ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EmptyState(
+        error: (e, _) => const EmptyState(
           icon: Icons.error_outline,
           title: 'Could not load tasks',
-          message: '$e',
+          message: 'Please check your connection and try again.',
         ),
       ),
     );
@@ -40,20 +40,23 @@ class GroupTasksPage extends ConsumerWidget {
   const GroupTasksPage({
     super.key,
     required this.group,
+    required this.project,
     required this.membership,
   });
   final Group group;
+  final Project project;
   final Membership membership;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(groupTasksProvider(group.id));
+    final result = ref.watch(projectTasksProvider(project.id));
     return Scaffold(
       floatingActionButton: membership.isLeader
           ? FloatingActionButton(
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => CreateTaskScreen(group: group),
+                  builder: (_) =>
+                      CreateTaskScreen(group: group, project: project),
                 ),
               ),
               child: const Icon(Icons.add),
@@ -71,15 +74,20 @@ class GroupTasksPage extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 children: tasks
                     .map(
-                      (t) => TaskCard(task: t, isLeader: membership.isLeader),
+                      (t) => TaskCard(
+                        task: t,
+                        isLeader: membership.isLeader,
+                        project: project,
+                        group: group,
+                      ),
                     )
                     .toList(),
               ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EmptyState(
+        error: (e, _) => const EmptyState(
           icon: Icons.error_outline,
           title: 'Could not load tasks',
-          message: '$e',
+          message: 'Please check your connection and try again.',
         ),
       ),
     );
@@ -87,12 +95,21 @@ class GroupTasksPage extends ConsumerWidget {
 }
 
 class TaskCard extends ConsumerWidget {
-  const TaskCard({super.key, required this.task, required this.isLeader});
+  const TaskCard({
+    super.key,
+    required this.task,
+    required this.isLeader,
+    this.project,
+    this.group,
+  });
   final GroupTask task;
   final bool isLeader;
+  final Project? project;
+  final Group? group;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider).value;
+    final canEdit = task.assignedTo == user?.uid || isLeader;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -133,19 +150,33 @@ class TaskCard extends ConsumerWidget {
                 if (task.deadline != null)
                   Text(
                     '${task.deadline!.day}/${task.deadline!.month}',
-                    style: Theme.of(context).textTheme.labelMedium,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color:
+                            task.isOverdue ? Colors.red : null),
                   ),
               ],
             ),
-            if (task.assignedTo == user?.uid || isLeader)
+            if (task.assignedTo != null && task.assignedName.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  'Assigned to ${task.assignedName}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            if (canEdit)
               Align(
                 alignment: Alignment.centerRight,
                 child: PopupMenuButton<String>(
                   onSelected: (v) async {
                     try {
-                      await ref
-                          .read(taskRepositoryProvider)
-                          .updateStatus(task, v, user!.uid, isLeader);
+                      await ref.read(taskRepositoryProvider).updateStatus(
+                            task,
+                            v,
+                            user!.uid,
+                            isLeader,
+                            user.fullName,
+                          );
                     } catch (e) {
                       if (context.mounted) showError(context, e);
                     }
@@ -159,7 +190,10 @@ class TaskCard extends ConsumerWidget {
                       value: 'inProgress',
                       child: Text('In progress'),
                     ),
-                    PopupMenuItem(value: 'blocked', child: Text('Blocked')),
+                    PopupMenuItem(
+                      value: 'blocked',
+                      child: Text('Blocked'),
+                    ),
                     PopupMenuItem(
                       value: 'completed',
                       child: Text('Mark complete'),
@@ -174,15 +208,20 @@ class TaskCard extends ConsumerWidget {
   }
 
   Color _priority(String p) => switch (p) {
-    'urgent' => Colors.red,
-    'high' => Colors.orange,
-    _ => Colors.blue,
-  };
+        'urgent' => Colors.red,
+        'high' => Colors.orange,
+        _ => Colors.blue,
+      };
 }
 
 class CreateTaskScreen extends ConsumerStatefulWidget {
-  const CreateTaskScreen({super.key, required this.group});
+  const CreateTaskScreen({
+    super.key,
+    required this.group,
+    required this.project,
+  });
   final Group group;
+  final Project project;
   @override
   ConsumerState<CreateTaskScreen> createState() => _CreateTaskScreenState();
 }
@@ -192,6 +231,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
       title = TextEditingController(),
       description = TextEditingController();
   String? assignee;
+  String? assigneeName;
   String priority = 'medium';
   DateTime deadline = DateTime.now().add(const Duration(days: 7));
   bool loading = false;
@@ -205,6 +245,7 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
   @override
   Widget build(BuildContext context) {
     final members = ref.watch(membersProvider(widget.group.id)).value ?? [];
+    final activeMembers = members.where((m) => m.status == 'active').toList();
     return Scaffold(
       appBar: AppBar(title: const Text('Create task')),
       body: Form(
@@ -225,10 +266,10 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
               decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: assignee,
+              DropdownButtonFormField<String>(
+                initialValue: assignee,
               decoration: const InputDecoration(labelText: 'Assign to'),
-              items: members
+              items: activeMembers
                   .map(
                     (m) => DropdownMenuItem(
                       value: m.userId,
@@ -236,12 +277,20 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                     ),
                   )
                   .toList(),
-              onChanged: (v) => setState(() => assignee = v),
+              onChanged: (v) {
+                setState(() {
+                  assignee = v;
+                  assigneeName = activeMembers
+                      .firstWhere((m) => m.userId == v, orElse: () => const Membership(
+                          id: '', groupId: '', userId: '', role: '', status: ''))
+                      .fullName;
+                });
+              },
               validator: (v) => v == null ? 'Choose a member.' : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField(
-              value: priority,
+              initialValue: priority,
               decoration: const InputDecoration(labelText: 'Priority'),
               items: const ['low', 'medium', 'high', 'urgent']
                   .map(
@@ -275,22 +324,28 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
               loading: loading,
               onPressed: () async {
                 if (!form.currentState!.validate()) return;
+                final user = ref.read(currentUserProvider).value;
+                if (user == null || widget.group.leaderId != user.uid) {
+                  showError(context, 'Only the leader can create tasks.');
+                  return;
+                }
                 setState(() => loading = true);
                 try {
-                  await ref
-                      .read(taskRepositoryProvider)
-                      .create(
-                        group: widget.group,
+                  await ref.read(taskRepositoryProvider).create(
+                        project: widget.project,
                         title: title.text,
                         description: description.text,
                         assignedTo: assignee!,
+                        assignedName: assigneeName ?? '',
                         priority: priority,
                         deadline: deadline,
-                        actorId: widget.group.leaderId,
+                        actorId: user.uid,
+                        actorName: user.fullName,
                       );
-                  if (mounted) Navigator.pop(context);
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
                 } catch (e) {
-                  if (mounted) showError(context, e);
+                  if (context.mounted) showError(context, e);
                 } finally {
                   if (mounted) setState(() => loading = false);
                 }

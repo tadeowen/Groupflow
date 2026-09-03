@@ -42,25 +42,58 @@ final membershipsProvider = StreamProvider.family<List<Membership>, String>(
 final groupProvider = StreamProvider.family<Group?, String>(
   (ref, id) => ref.watch(groupRepositoryProvider).group(id),
 );
+final projectsProvider = StreamProvider.family<List<Project>, String>(
+  (ref, groupId) => ref.watch(groupRepositoryProvider).projects(groupId),
+);
+final projectProvider = StreamProvider.family<Project?, String>(
+  (ref, id) => ref.watch(groupRepositoryProvider).project(id),
+);
 final membersProvider = StreamProvider.family<List<Membership>, String>(
   (ref, id) => ref.watch(groupRepositoryProvider).members(id),
 );
-final groupTasksProvider = StreamProvider.family<List<GroupTask>, String>(
-  (ref, id) => ref.watch(taskRepositoryProvider).groupTasks(id),
+final pendingJoinRequestsProvider =
+    StreamProvider.family<List<JoinRequest>, String>(
+  (ref, groupId) => ref.watch(groupRepositoryProvider).joinRequests(groupId),
+);
+final projectTasksProvider = StreamProvider.family<List<GroupTask>, String>(
+  (ref, projectId) => ref.watch(taskRepositoryProvider).projectTasks(projectId),
 );
 final assignedTasksProvider = StreamProvider.family<List<GroupTask>, String>(
   (ref, uid) => ref.watch(taskRepositoryProvider).assignedTasks(uid),
 );
+final projectProgressProvider =
+    StreamProvider.family<int, String>((ref, projectId) =>
+        ref.watch(taskRepositoryProvider).projectProgress(projectId));
 final notesProvider = StreamProvider.family<List<GroupNote>, String>(
-  (ref, id) => ref.watch(workspaceRepositoryProvider).notes(id),
+  (ref, projectId) => ref.watch(workspaceRepositoryProvider).projectNotes(projectId),
+);
+final noteVersionsProvider = StreamProvider.family<List<NoteVersion>, String>(
+  (ref, noteId) =>
+      ref.watch(workspaceRepositoryProvider).noteVersions(noteId),
 );
 final filesProvider = StreamProvider.family<List<WorkspaceFile>, String>(
-  (ref, id) => ref.watch(collaborationRepositoryProvider).files(id),
+  (ref, projectId) => ref.watch(collaborationRepositoryProvider).projectFiles(projectId),
 );
 final postsProvider = StreamProvider.family<List<DiscussionPost>, String>(
-  (ref, id) => ref.watch(collaborationRepositoryProvider).posts(id),
+  (ref, projectId) =>
+      ref.watch(collaborationRepositoryProvider).projectPosts(projectId),
+);
+final commentsProvider = StreamProvider.family<List<Comment>, String>(
+  (ref, postId) =>
+      ref.watch(collaborationRepositoryProvider).postComments(postId),
+);
+final announcementsProvider =
+    StreamProvider.family<List<Announcement>, String>((ref, groupId) =>
+        ref.watch(collaborationRepositoryProvider).announcements(groupId));
+final submissionsProvider = StreamProvider.family<List<Submission>, String>(
+  (ref, projectId) =>
+      ref.watch(collaborationRepositoryProvider).submissions(projectId),
+);
+final activityLogsProvider = StreamProvider.family<List<ActivityLog>, String>(
+  (ref, groupId) =>
+      ref.watch(collaborationRepositoryProvider).activityLogs(groupId),
 );
 final notificationsProvider =
     StreamProvider.family<List<AppNotification>, String>(
-      (ref, id) => ref.watch(collaborationRepositoryProvider).notifications(id),
+      (ref, uid) => ref.watch(collaborationRepositoryProvider).notifications(uid),
     );

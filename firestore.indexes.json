@@ -1,0 +1,175 @@
+{
+  "indexes": [
+    {
+      "collection": "groupMembers",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "userId", "order": "ASCENDING" },
+            { "fieldPath": "status", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "groupMembers",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "groupId", "order": "ASCENDING" },
+            { "fieldPath": "status", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "groupMembers",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "groupId", "order": "ASCENDING" },
+            { "fieldPath": "role", "order": "ASCENDING" },
+            { "fieldPath": "status", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "tasks",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "projectId", "order": "ASCENDING" },
+            { "fieldPath": "deadline", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "tasks",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "assignedTo", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "notes",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "projectId", "order": "ASCENDING" },
+            { "fieldPath": "updatedAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "discussionPosts",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "projectId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "comments",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "postId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "announcements",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "groupId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "activityLogs",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "groupId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "notifications",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "userId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "files",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "projectId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "projects",
+      "queryScope": "COLLECTION",
+      "fieldOverrides": [],
+      "compound": [
+        {
+          "fields": [
+            { "fieldPath": "groupId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "DESCENDING" }
+          ]
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

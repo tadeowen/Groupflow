@@ -50,3 +50,6 @@ ios/Runner/GoogleService-Info.plist
 android/key.properties
 *.jks
 *.keystore
+
+# Firebase FlutterFire configuration (generated locally)
+lib/firebase_options.dart

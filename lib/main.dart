@@ -39,7 +39,12 @@ class AuthGate extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authStateProvider);
     return auth.when(
-      data: (user) => user == null ? const AuthScreen() : const HomeShell(),
+      data: (user) {
+        if (user != null) {
+          ref.read(authRepositoryProvider).updateLastSeen(user.uid);
+        }
+        return user == null ? const AuthScreen() : const HomeShell();
+      },
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => FirebaseSetupError(error: e),

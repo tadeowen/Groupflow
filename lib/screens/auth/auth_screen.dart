@@ -100,14 +100,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           await ref
                               .read(authRepositoryProvider)
                               .resetPassword(email.text);
-                          if (mounted)
+                          if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Password reset email sent.'),
                               ),
                             );
+                          }
                         } catch (e) {
-                          if (mounted) showError(context, e);
+                          if (context.mounted) showError(context, e);
                         }
                       },
                       child: const Text('Forgot password?'),
@@ -143,8 +144,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     keyboardType: emailType ? TextInputType.emailAddress : null,
     decoration: InputDecoration(labelText: label),
     validator: (v) {
-      if (required && (v == null || v.trim().isEmpty))
+      if (required && (v == null || v.trim().isEmpty)) {
         return '$label is required.';
+      }
       if (emailType && !v!.contains('@')) return 'Enter a valid email.';
       if (secret && v!.length < 8) return 'Use at least 8 characters.';
       return null;

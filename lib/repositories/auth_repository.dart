@@ -39,4 +39,19 @@ class AuthRepository {
       'isActive': true,
     });
   }
+
+  Future<void> updateLastSeen(String uid) => _db
+      .collection('users')
+      .doc(uid)
+      .update({'lastSeen': FieldValue.serverTimestamp()});
+  Future<void> updateProfile({
+    required String uid,
+    required String fullName,
+    String? studentNumber,
+    String? photoUrl,
+  }) => _db.collection('users').doc(uid).update({
+        'fullName': fullName.trim(),
+        'studentNumber': studentNumber?.trim(),
+        'photoUrl': photoUrl,
+      });
 }

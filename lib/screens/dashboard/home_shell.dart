@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../models/app_models.dart';
 import '../../providers/app_providers.dart';
 import '../../widgets/common.dart';
 import '../groups/group_screens.dart';
-import '../profile/profile_screen.dart';
 import '../tasks/task_screens.dart';
+import '../profile/profile_screen.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
@@ -17,8 +18,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider).value;
-    if (user == null)
+    if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     final pages = [
       DashboardPage(userName: user.fullName, userId: user.uid),
       const GroupsPage(),
@@ -105,25 +107,7 @@ class DashboardPage extends ConsumerWidget {
               )
             else
               ...items.map(
-                (m) => Card(
-                  child: ListTile(
-                    title: Text(
-                      m.fullName.isEmpty ? 'Group workspace' : m.fullName,
-                    ),
-                    subtitle: Text(
-                      m.isLeader ? 'Group leader' : 'Group member',
-                    ),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => GroupDetailScreen(
-                          groupId: m.groupId,
-                          membership: m,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                (m) => _DashboardGroupTile(membership: m),
               ),
             const SizedBox(height: 26),
             Wrap(
@@ -151,11 +135,39 @@ class DashboardPage extends ConsumerWidget {
             ),
           ],
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EmptyState(
-          icon: Icons.cloud_off,
-          title: 'Unable to load groups',
-          message: '$e',
+         loading: () => const Center(child: CircularProgressIndicator()),
+         error: (e, _) => const EmptyState(
+           icon: Icons.cloud_off,
+           title: 'Unable to load groups',
+           message: 'Please check your connection and try again.',
+         ),
+       ),
+     );
+   }
+}
+
+class _DashboardGroupTile extends ConsumerWidget {
+  const _DashboardGroupTile({required this.membership});
+  final Membership membership;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final group = ref.watch(groupProvider(membership.groupId)).value;
+    if (group == null) return const SizedBox();
+    return Card(
+      child: ListTile(
+        title: Text(group.name),
+        subtitle: Text(
+          membership.isLeader ? 'Group leader' : 'Group member',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GroupDetailScreen(
+              groupId: group.id,
+              membership: membership,
+            ),
+          ),
         ),
       ),
     );
@@ -167,8 +179,9 @@ class NotificationsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider).value;
-    if (user == null)
+    if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     final data = ref.watch(notificationsProvider(user.uid));
     return Scaffold(
       appBar: AppBar(title: const Text('Notifications')),
@@ -177,7 +190,8 @@ class NotificationsPage extends ConsumerWidget {
             ? const EmptyState(
                 icon: Icons.notifications_none,
                 title: 'You’re all caught up',
-                message: 'Task assignments and announcements will appear here.',
+                message:
+                    'Task assignments and announcements will appear here.',
               )
             : ListView.builder(
                 itemCount: items.length,
@@ -198,10 +212,10 @@ class NotificationsPage extends ConsumerWidget {
                 },
               ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EmptyState(
+        error: (e, _) => const EmptyState(
           icon: Icons.error_outline,
           title: 'Could not load notifications',
-          message: '$e',
+          message: 'Please check your connection and try again.',
         ),
       ),
     );
