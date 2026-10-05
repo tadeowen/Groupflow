@@ -50,8 +50,8 @@ class AuthRepository {
     String? studentNumber,
     String? photoUrl,
   }) => _db.collection('users').doc(uid).update({
-        'fullName': fullName.trim(),
-        'studentNumber': studentNumber?.trim(),
-        'photoUrl': photoUrl,
-      });
+    'fullName': fullName.trim(),
+    'studentNumber': studentNumber?.trim(),
+    'photoUrl': photoUrl,
+  });
 }

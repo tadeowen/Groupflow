@@ -43,15 +43,13 @@ class FilesPage extends ConsumerWidget {
                   subtitle: Text(
                     '${files[i].category} • ${_formatSize(files[i].size)} • ${files[i].uploaderName}',
                   ),
-                  trailing: isLeader || files[i].uploaderId ==
-                      ref.read(currentUserProvider).value?.uid
+                  trailing:
+                      isLeader ||
+                          files[i].uploaderId ==
+                              ref.read(currentUserProvider).value?.uid
                       ? IconButton(
                           icon: const Icon(Icons.delete_outline),
-                          onPressed: () => _deleteFile(
-                            context,
-                            ref,
-                            files[i],
-                          ),
+                          onPressed: () => _deleteFile(context, ref, files[i]),
                         )
                       : null,
                   onTap: () => launchUrl(
@@ -105,15 +103,13 @@ class FilesPage extends ConsumerWidget {
     );
     if (ok != true) return;
     try {
-      await ref.read(collaborationRepositoryProvider).deleteFile(
-            file,
-            user.uid,
-            isLeader,
-          );
+      await ref
+          .read(collaborationRepositoryProvider)
+          .deleteFile(file, user.uid, isLeader);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${file.name} deleted.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${file.name} deleted.')));
       }
     } catch (e) {
       if (context.mounted) showError(context, e);
@@ -157,28 +153,24 @@ class FilesPage extends ConsumerWidget {
       context: context,
       builder: (context) => SimpleDialog(
         title: const Text('File category'),
-        children: [
-          'documents',
-          'code',
-          'design',
-          'reports',
-          'presentations',
-          'other'
-        ]
-            .map(
-              (c) => SimpleDialogOption(
-                onPressed: () => Navigator.pop(context, c),
-                child: Text(c.toUpperCase()),
-              ),
-            )
-            .toList(),
+        children:
+            ['documents', 'code', 'design', 'reports', 'presentations', 'other']
+                .map(
+                  (c) => SimpleDialogOption(
+                    onPressed: () => Navigator.pop(context, c),
+                    child: Text(c.toUpperCase()),
+                  ),
+                )
+                .toList(),
       ),
     );
     if (category == null) return;
     final user = ref.read(currentUserProvider).value;
     if (user == null) return;
     try {
-      await ref.read(collaborationRepositoryProvider).uploadFile(
+      await ref
+          .read(collaborationRepositoryProvider)
+          .uploadFile(
             groupId: group.id,
             projectId: project.id,
             uploaderId: user.uid,

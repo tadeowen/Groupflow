@@ -5,7 +5,11 @@ import '../../providers/app_providers.dart';
 import '../../widgets/common.dart';
 
 class AnnouncementsScreen extends ConsumerStatefulWidget {
-  const AnnouncementsScreen({super.key, required this.group, required this.isLeader});
+  const AnnouncementsScreen({
+    super.key,
+    required this.group,
+    required this.isLeader,
+  });
   final Group group;
   final bool isLeader;
   @override
@@ -119,7 +123,9 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
     if (user == null) return;
     setState(() => posting = true);
     try {
-      await ref.read(collaborationRepositoryProvider).addAnnouncement(
+      await ref
+          .read(collaborationRepositoryProvider)
+          .addAnnouncement(
             groupId: widget.group.id,
             authorId: user.uid,
             authorName: user.fullName,
@@ -162,15 +168,13 @@ class _AnnouncementsScreenState extends ConsumerState<AnnouncementsScreen> {
     );
     if (ok != true) return;
     try {
-      await ref.read(collaborationRepositoryProvider).deleteAnnouncement(
-            announcement.id,
-            widget.group.id,
-            user.uid,
-          );
+      await ref
+          .read(collaborationRepositoryProvider)
+          .deleteAnnouncement(announcement.id, widget.group.id, user.uid);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Announcement deleted.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Announcement deleted.')));
       }
     } catch (e) {
       if (context.mounted) showError(context, e);

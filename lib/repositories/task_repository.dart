@@ -10,8 +10,9 @@ class TaskRepository {
       .where('projectId', isEqualTo: projectId)
       .snapshots()
       .map((s) {
-        final result =
-            s.docs.map((d) => GroupTask.fromMap(d.id, d.data())).toList();
+        final result = s.docs
+            .map((d) => GroupTask.fromMap(d.id, d.data()))
+            .toList();
         result.sort(
           (a, b) => (a.deadline ?? DateTime(2100)).compareTo(
             b.deadline ?? DateTime(2100),
@@ -108,8 +109,7 @@ class TaskRepository {
       updates['completedAt'] = FieldValue.serverTimestamp();
     }
     batch.update(_db.collection('tasks').doc(task.id), updates);
-    final actionType =
-        status == 'completed' ? 'taskCompleted' : 'taskUpdated';
+    final actionType = status == 'completed' ? 'taskCompleted' : 'taskUpdated';
     batch.set(_db.collection('activityLogs').doc(), {
       'groupId': task.groupId,
       'projectId': task.projectId,
@@ -123,11 +123,7 @@ class TaskRepository {
     await batch.commit();
   }
 
-  Future<void> delete(
-    GroupTask task,
-    String actorId,
-    bool isLeader,
-  ) async {
+  Future<void> delete(GroupTask task, String actorId, bool isLeader) async {
     if (!isLeader) {
       throw StateError('Only the leader can delete tasks.');
     }

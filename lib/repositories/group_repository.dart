@@ -44,9 +44,7 @@ class GroupRepository {
     required AppUser leader,
   }) async {
     if (leader.email.trim().toLowerCase() != groupCreatorEmail) {
-      throw StateError(
-        'Only $groupCreatorEmail is allowed to create groups.',
-      );
+      throw StateError('Only $groupCreatorEmail is allowed to create groups.');
     }
     final groupRef = _groups.doc();
     final membershipRef = _db
@@ -180,8 +178,10 @@ class GroupRepository {
     required AppUser user,
   }) async {
     final normalizedCode = code.trim().toUpperCase();
-    final codeSnap =
-        await _db.collection('groupJoinCodes').doc(normalizedCode).get();
+    final codeSnap = await _db
+        .collection('groupJoinCodes')
+        .doc(normalizedCode)
+        .get();
     if (!codeSnap.exists) throw StateError('That group code does not exist.');
     final codeData = codeSnap.data()!;
     final groupId = codeData['groupId'] as String;
@@ -189,7 +189,8 @@ class GroupRepository {
     final joinType = codeData['joinType'] as String? ?? 'invite';
     if (codeData['isLocked'] == true) throw StateError('This group is locked.');
     final groupSnap = await _groups.doc(groupId).get();
-    if (!groupSnap.exists) throw StateError('This group is no longer available.');
+    if (!groupSnap.exists)
+      throw StateError('This group is no longer available.');
     final group = Group.fromMap(groupSnap.id, groupSnap.data()!);
     if (group.code != normalizedCode) {
       throw StateError('This group code is no longer valid.');
@@ -203,9 +204,7 @@ class GroupRepository {
       if (status == 'active') {
         throw StateError('You are already a member of this group.');
       }
-      throw StateError(
-        'You were removed from this group. Contact the leader.',
-      );
+      throw StateError('You were removed from this group. Contact the leader.');
     }
     if (joinType == 'invite') {
       throw StateError('This group is invite only.');
@@ -276,7 +275,9 @@ class GroupRepository {
       .where('groupId', isEqualTo: groupId)
       .where('status', isEqualTo: 'pending')
       .snapshots()
-      .map((s) => s.docs.map((d) => JoinRequest.fromMap(d.id, d.data())).toList());
+      .map(
+        (s) => s.docs.map((d) => JoinRequest.fromMap(d.id, d.data())).toList(),
+      );
 
   Future<void> approveJoinRequest({
     required String groupId,
@@ -284,8 +285,7 @@ class GroupRepository {
     required String userName,
     required AppUser approver,
   }) async {
-    final requestRef =
-        _db.collection('joinRequests').doc('${groupId}_$userId');
+    final requestRef = _db.collection('joinRequests').doc('${groupId}_$userId');
     final existing = await requestRef.get();
     if (!existing.exists) throw StateError('No pending request found.');
     final data = existing.data()!;
@@ -324,7 +324,8 @@ class GroupRepository {
       'actorId': approver.uid,
       'actorName': approver.fullName,
       'actionType': 'memberJoined',
-      'description': '${approver.fullName} approved ${data['fullName']} to join',
+      'description':
+          '${approver.fullName} approved ${data['fullName']} to join',
       'createdAt': FieldValue.serverTimestamp(),
     });
     await batch.commit();
@@ -335,8 +336,7 @@ class GroupRepository {
     required String userId,
     required AppUser rejecter,
   }) async {
-    final requestRef =
-        _db.collection('joinRequests').doc('${groupId}_$userId');
+    final requestRef = _db.collection('joinRequests').doc('${groupId}_$userId');
     final existing = await requestRef.get();
     if (!existing.exists) throw StateError('No pending request found.');
     final data = existing.data()!;
@@ -403,7 +403,8 @@ class GroupRepository {
     final updates = <String, dynamic>{};
     if (name != null) updates['name'] = name.trim();
     if (description != null) updates['description'] = description.trim();
-    if (courseworkTitle != null) updates['courseworkTitle'] = courseworkTitle.trim();
+    if (courseworkTitle != null)
+      updates['courseworkTitle'] = courseworkTitle.trim();
     if (maxMembers != null) updates['maxMembers'] = maxMembers;
     if (joinType != null) updates['joinType'] = joinType;
     if (isLocked != null) updates['isLocked'] = isLocked;
@@ -442,7 +443,9 @@ class GroupRepository {
     if (group.leaderId != actorId) {
       throw StateError('Only the leader can update the project.');
     }
-    final updates = <String, dynamic>{'updatedAt': FieldValue.serverTimestamp()};
+    final updates = <String, dynamic>{
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
     if (title != null) updates['title'] = title.trim();
     if (description != null) updates['description'] = description.trim();
     if (deadline != null) updates['deadline'] = Timestamp.fromDate(deadline);

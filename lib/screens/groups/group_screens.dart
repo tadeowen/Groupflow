@@ -78,10 +78,8 @@ class _GroupTile extends ConsumerWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => GroupDetailScreen(
-              groupId: group.id,
-              membership: membership,
-            ),
+            builder: (_) =>
+                GroupDetailScreen(groupId: group.id, membership: membership),
           ),
         ),
       ),
@@ -115,82 +113,79 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Create group')),
-        body: Form(
-          key: form,
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              _input(name, 'Group name', true),
-              _input(course, 'Course / subject', true),
-              _input(description, 'Description', false, 3),
-              _input(title, 'Coursework title', true),
-              _input(max, 'Maximum members', true, 1, true),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Deadline'),
-                subtitle: Text(
-                  '${deadline.day}/${deadline.month}/${deadline.year}',
-                ),
-                trailing: const Icon(Icons.calendar_today),
-                onTap: () async {
-                  final d = await showDatePicker(
-                    context: context,
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2035),
-                    initialDate: deadline,
-                  );
-                  if (d != null) setState(() => deadline = d);
-                },
-              ),
-              DropdownButtonFormField<String>(
-                initialValue: join,
-                items: const [
-                  DropdownMenuItem(value: 'open', child: Text('Open')),
-                  DropdownMenuItem(
-                    value: 'request',
-                    child: Text('Request to join'),
-                  ),
-                  DropdownMenuItem(value: 'invite', child: Text('Invite only')),
-                ],
-                onChanged: (v) => setState(() => join = v!),
-              ),
-              const SizedBox(height: 20),
-              AppButton(
-                label: 'Create group',
-                loading: loading,
-                onPressed: create,
-              ),
-            ],
+    appBar: AppBar(title: const Text('Create group')),
+    body: Form(
+      key: form,
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          _input(name, 'Group name', true),
+          _input(course, 'Course / subject', true),
+          _input(description, 'Description', false, 3),
+          _input(title, 'Coursework title', true),
+          _input(max, 'Maximum members', true, 1, true),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Deadline'),
+            subtitle: Text(
+              '${deadline.day}/${deadline.month}/${deadline.year}',
+            ),
+            trailing: const Icon(Icons.calendar_today),
+            onTap: () async {
+              final d = await showDatePicker(
+                context: context,
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2035),
+                initialDate: deadline,
+              );
+              if (d != null) setState(() => deadline = d);
+            },
           ),
-        ),
-      );
+          DropdownButtonFormField<String>(
+            initialValue: join,
+            items: const [
+              DropdownMenuItem(value: 'open', child: Text('Open')),
+              DropdownMenuItem(
+                value: 'request',
+                child: Text('Request to join'),
+              ),
+              DropdownMenuItem(value: 'invite', child: Text('Invite only')),
+            ],
+            onChanged: (v) => setState(() => join = v!),
+          ),
+          const SizedBox(height: 20),
+          AppButton(label: 'Create group', loading: loading, onPressed: create),
+        ],
+      ),
+    ),
+  );
   Widget _input(
     TextEditingController c,
     String label,
     bool required, [
     int lines = 1,
     bool num = false,
-  ]) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: TextFormField(
-          controller: c,
-          maxLines: lines,
-          keyboardType: num ? TextInputType.number : null,
-          decoration: InputDecoration(labelText: label),
-          validator: (v) => required && (v == null || v.trim().isEmpty)
-              ? '$label is required.'
-              : null,
-        ),
-      );
+  ]) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: TextFormField(
+      controller: c,
+      maxLines: lines,
+      keyboardType: num ? TextInputType.number : null,
+      decoration: InputDecoration(labelText: label),
+      validator: (v) => required && (v == null || v.trim().isEmpty)
+          ? '$label is required.'
+          : null,
+    ),
+  );
   Future<void> create() async {
     if (!form.currentState!.validate()) return;
     final user = ref.read(currentUserProvider).value;
     if (user == null) return;
     setState(() => loading = true);
     try {
-      final g = await ref.read(groupRepositoryProvider).create(
+      final g = await ref
+          .read(groupRepositoryProvider)
+          .create(
             name: name.text,
             course: course.text,
             description: description.text,
@@ -231,28 +226,24 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Join group')),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Enter the code shared by your group leader.'),
-              const SizedBox(height: 16),
-              TextField(
-                controller: code,
-                decoration: const InputDecoration(labelText: 'Group code'),
-              ),
-              const SizedBox(height: 16),
-              AppButton(
-                label: 'Join group',
-                loading: loading,
-                onPressed: join,
-              ),
-            ],
+    appBar: AppBar(title: const Text('Join group')),
+    body: Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Enter the code shared by your group leader.'),
+          const SizedBox(height: 16),
+          TextField(
+            controller: code,
+            decoration: const InputDecoration(labelText: 'Group code'),
           ),
-        ),
-      );
+          const SizedBox(height: 16),
+          AppButton(label: 'Join group', loading: loading, onPressed: join),
+        ],
+      ),
+    ),
+  );
   Future<void> join() async {
     final user = ref.read(currentUserProvider).value;
     if (user == null) return;
@@ -325,14 +316,15 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                 !projects.any((p) => p.id == selectedProjectId)) {
               selectedProjectId = projects.first.id;
             }
-            final project =
-                projects.firstWhere((p) => p.id == selectedProjectId!);
+            final project = projects.firstWhere(
+              (p) => p.id == selectedProjectId!,
+            );
             return DefaultTabController(
               length: 6,
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(g.name),
-                   actions: [
+                  actions: [
                     if (widget.membership.isLeader)
                       IconButton(
                         icon: const Icon(Icons.send_outlined),
@@ -350,8 +342,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    GroupSettingsScreen(group: g),
+                                builder: (_) => GroupSettingsScreen(group: g),
                               ),
                             );
                           } else if (v == 'requests') {
@@ -395,17 +386,17 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             value: 'activity',
                             child: Text('Activity timeline'),
                           ),
-                           PopupMenuItem(
-                             value: 'lock',
-                             child: Text(g.isLocked
-                                 ? 'Unlock group'
-                                 : 'Lock group'),
-                           ),
-                           const PopupMenuItem(
-                             value: 'announcements',
-                             child: Text('Manage announcements'),
-                           ),
-                         ],
+                          PopupMenuItem(
+                            value: 'lock',
+                            child: Text(
+                              g.isLocked ? 'Unlock group' : 'Lock group',
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'announcements',
+                            child: Text('Manage announcements'),
+                          ),
+                        ],
                       ),
                   ],
                   bottom: const TabBar(
@@ -422,7 +413,11 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                 ),
                 body: TabBarView(
                   children: [
-                    Overview(group: g, project: project, membership: widget.membership),
+                    Overview(
+                      group: g,
+                      project: project,
+                      membership: widget.membership,
+                    ),
                     GroupTasksPage(
                       group: g,
                       project: project,
@@ -502,7 +497,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Deadline'),
-              subtitle: Text('${deadline.day}/${deadline.month}/${deadline.year}'),
+              subtitle: Text(
+                '${deadline.day}/${deadline.month}/${deadline.year}',
+              ),
               trailing: const Icon(Icons.calendar_today),
               onTap: () async {
                 final d = await showDatePicker(
@@ -525,7 +522,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             onPressed: () async {
               if (title.text.trim().isEmpty) return;
               try {
-                await ref.read(groupRepositoryProvider).createProject(
+                await ref
+                    .read(groupRepositoryProvider)
+                    .createProject(
                       groupId: group.id,
                       title: title.text,
                       description: description.text,
@@ -550,9 +549,15 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Future<void> _toggleLock(Group group, BuildContext context, WidgetRef ref) async {
+  Future<void> _toggleLock(
+    Group group,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     try {
-      await ref.read(groupRepositoryProvider).updateSettings(
+      await ref
+          .read(groupRepositoryProvider)
+          .updateSettings(
             group: group,
             actorId: group.leaderId,
             isLocked: !group.isLocked,
@@ -560,9 +565,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            group.isLocked ? 'Group unlocked.' : 'Group locked.',
-          ),
+          content: Text(group.isLocked ? 'Group unlocked.' : 'Group locked.'),
         ),
       );
     } catch (e) {
@@ -614,10 +617,9 @@ class Overview extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Text(
                         '$overdue overdue',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.red),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: Colors.red),
                       ),
                     ],
                   ],
@@ -625,55 +627,43 @@ class Overview extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            _section(
-              context,
-              'Coursework details',
-              [
-                ListTile(
-                  leading: const Icon(Icons.description_outlined),
-                  title: const Text('Description'),
-                  subtitle: Text(
-                    project.description.isEmpty
-                        ? 'No description added.'
-                        : project.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+            _section(context, 'Coursework details', [
+              ListTile(
+                leading: const Icon(Icons.description_outlined),
+                title: const Text('Description'),
+                subtitle: Text(
+                  project.description.isEmpty
+                      ? 'No description added.'
+                      : project.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                if (project.deadline != null)
-                  ListTile(
-                    leading: const Icon(Icons.event),
-                    title: const Text('Deadline'),
-                    subtitle: Text(
-                      '${project.deadline!.day}/${project.deadline!.month}/${project.deadline!.year}',
-                    ),
-                  ),
-              ],
-            ),
-            _section(
-              context,
-              'Group code',
-              [
-                ListTile(
-                  leading: const Icon(Icons.vpn_key),
-                  title: const Text('Group code'),
-                  subtitle: Text(group.code),
-                ),
-              ],
-            ),
-            if (group.repositoryUrl != null)
-              _section(
-                context,
-                'GitHub repository',
-                [
-                  ListTile(
-                    leading: const Icon(Icons.code),
-                    title: const Text('Repository'),
-                    subtitle: Text(group.repositoryName ?? group.repositoryUrl!),
-                    onTap: () => _launchUrl(context, group.repositoryUrl!),
-                  ),
-                ],
               ),
+              if (project.deadline != null)
+                ListTile(
+                  leading: const Icon(Icons.event),
+                  title: const Text('Deadline'),
+                  subtitle: Text(
+                    '${project.deadline!.day}/${project.deadline!.month}/${project.deadline!.year}',
+                  ),
+                ),
+            ]),
+            _section(context, 'Group code', [
+              ListTile(
+                leading: const Icon(Icons.vpn_key),
+                title: const Text('Group code'),
+                subtitle: Text(group.code),
+              ),
+            ]),
+            if (group.repositoryUrl != null)
+              _section(context, 'GitHub repository', [
+                ListTile(
+                  leading: const Icon(Icons.code),
+                  title: const Text('Repository'),
+                  subtitle: Text(group.repositoryName ?? group.repositoryUrl!),
+                  onTap: () => _launchUrl(context, group.repositoryUrl!),
+                ),
+              ]),
             announcementsAsync.when(
               data: (announcements) => _section(
                 context,
@@ -683,12 +673,15 @@ class Overview extends ConsumerWidget {
                         const ListTile(
                           leading: Icon(Icons.campaign_outlined),
                           title: Text('No announcements'),
-                          subtitle: Text('Leader announcements will appear here.'),
+                          subtitle: Text(
+                            'Leader announcements will appear here.',
+                          ),
                         ),
                       ]
                     : announcements
-                        .take(3)
-                        .map((a) => ListTile(
+                          .take(3)
+                          .map(
+                            (a) => ListTile(
                               leading: const Icon(Icons.campaign_outlined),
                               title: Text(a.content, maxLines: 2),
                               subtitle: Text(
@@ -697,8 +690,9 @@ class Overview extends ConsumerWidget {
                                     : _formatTime(a.createdAt),
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
-                            ))
-                        .toList(),
+                            ),
+                          )
+                          .toList(),
               ),
               loading: () => const SizedBox.shrink(),
               error: (_, _) => const SizedBox.shrink(),
@@ -724,7 +718,10 @@ class Overview extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
-                child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
               ),
               ...children,
             ],
@@ -757,8 +754,10 @@ class Overview extends ConsumerWidget {
             onPressed: () async {
               Navigator.pop(ctx);
               final uri = Uri.tryParse(url);
-              if (uri == null || !await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-                if (context.mounted) showError(context, 'Could not open the repository link.');
+              if (uri == null ||
+                  !await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+                if (context.mounted)
+                  showError(context, 'Could not open the repository link.');
               }
             },
             child: const Text('Open'),
@@ -770,11 +769,7 @@ class Overview extends ConsumerWidget {
 }
 
 class MembersPage extends ConsumerWidget {
-  const MembersPage({
-    super.key,
-    required this.group,
-    required this.membership,
-  });
+  const MembersPage({super.key, required this.group, required this.membership});
   final Group group;
   final Membership membership;
   @override
@@ -841,16 +836,18 @@ class MembersPage extends ConsumerWidget {
     );
     if (ok != true) return;
     try {
-      await ref.read(groupRepositoryProvider).removeMember(
+      await ref
+          .read(groupRepositoryProvider)
+          .removeMember(
             group: group,
             member: member,
             actorId: membership.userId,
             actorName: membership.fullName,
           );
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${member.fullName} removed.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${member.fullName} removed.')));
       }
     } catch (e) {
       if (context.mounted) showError(context, e);

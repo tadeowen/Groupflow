@@ -151,8 +151,8 @@ class TaskCard extends ConsumerWidget {
                   Text(
                     '${task.deadline!.day}/${task.deadline!.month}',
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color:
-                            task.isOverdue ? Colors.red : null),
+                      color: task.isOverdue ? Colors.red : null,
+                    ),
                   ),
               ],
             ),
@@ -170,7 +170,9 @@ class TaskCard extends ConsumerWidget {
                 child: PopupMenuButton<String>(
                   onSelected: (v) async {
                     try {
-                      await ref.read(taskRepositoryProvider).updateStatus(
+                      await ref
+                          .read(taskRepositoryProvider)
+                          .updateStatus(
                             task,
                             v,
                             user!.uid,
@@ -190,10 +192,7 @@ class TaskCard extends ConsumerWidget {
                       value: 'inProgress',
                       child: Text('In progress'),
                     ),
-                    PopupMenuItem(
-                      value: 'blocked',
-                      child: Text('Blocked'),
-                    ),
+                    PopupMenuItem(value: 'blocked', child: Text('Blocked')),
                     PopupMenuItem(
                       value: 'completed',
                       child: Text('Mark complete'),
@@ -208,10 +207,10 @@ class TaskCard extends ConsumerWidget {
   }
 
   Color _priority(String p) => switch (p) {
-        'urgent' => Colors.red,
-        'high' => Colors.orange,
-        _ => Colors.blue,
-      };
+    'urgent' => Colors.red,
+    'high' => Colors.orange,
+    _ => Colors.blue,
+  };
 }
 
 class CreateTaskScreen extends ConsumerStatefulWidget {
@@ -266,8 +265,8 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
               decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: assignee,
+            DropdownButtonFormField<String>(
+              initialValue: assignee,
               decoration: const InputDecoration(labelText: 'Assign to'),
               items: activeMembers
                   .map(
@@ -281,8 +280,16 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                 setState(() {
                   assignee = v;
                   assigneeName = activeMembers
-                      .firstWhere((m) => m.userId == v, orElse: () => const Membership(
-                          id: '', groupId: '', userId: '', role: '', status: ''))
+                      .firstWhere(
+                        (m) => m.userId == v,
+                        orElse: () => const Membership(
+                          id: '',
+                          groupId: '',
+                          userId: '',
+                          role: '',
+                          status: '',
+                        ),
+                      )
                       .fullName;
                 });
               },
@@ -331,7 +338,9 @@ class _CreateTaskScreenState extends ConsumerState<CreateTaskScreen> {
                 }
                 setState(() => loading = true);
                 try {
-                  await ref.read(taskRepositoryProvider).create(
+                  await ref
+                      .read(taskRepositoryProvider)
+                      .create(
                         project: widget.project,
                         title: title.text,
                         description: description.text,

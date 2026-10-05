@@ -15,25 +15,23 @@ class AppButton extends StatelessWidget {
   final bool loading;
   @override
   Widget build(BuildContext context) => FilledButton.icon(
-        onPressed: loading ? null : onPressed,
-        icon: loading
-            ? const SizedBox(
-                height: 18,
-                width: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : Icon(icon ?? Icons.arrow_forward),
-        label: Text(label),
-        style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      );
+    onPressed: loading ? null : onPressed,
+    icon: loading
+        ? const SizedBox(
+            height: 18,
+            width: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
+          )
+        : Icon(icon ?? Icons.arrow_forward),
+    label: Text(label),
+    style: FilledButton.styleFrom(
+      minimumSize: const Size.fromHeight(52),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    ),
+  );
 }
 
 class EmptyState extends StatelessWidget {
@@ -49,26 +47,25 @@ class EmptyState extends StatelessWidget {
   final Widget? action;
   @override
   Widget build(BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon,
-                  size: 46, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(height: 14),
-              Text(title, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 6),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              if (action != null) ...[const SizedBox(height: 20), action!],
-            ],
+    child: Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 46, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(height: 14),
+          Text(title, style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 6),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-        ),
-      );
+          if (action != null) ...[const SizedBox(height: 20), action!],
+        ],
+      ),
+    ),
+  );
 }
 
 class StatusBadge extends StatelessWidget {
@@ -82,10 +79,7 @@ class StatusBadge extends StatelessWidget {
       'inProgress' => Colors.deepOrange,
       _ => Colors.orange,
     };
-    final label = status.replaceAllMapped(
-      RegExp(r'(?=[A-Z])'),
-      (m) => ' ',
-    );
+    final label = status.replaceAllMapped(RegExp(r'(?=[A-Z])'), (m) => ' ');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
@@ -130,7 +124,6 @@ String friendlyError(Object error) {
   return 'Something went wrong. Please try again.';
 }
 
-void showError(BuildContext context, Object error) =>
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(friendlyError(error))),
-    );
+void showError(BuildContext context, Object error) => ScaffoldMessenger.of(
+  context,
+).showSnackBar(SnackBar(content: Text(friendlyError(error))));

@@ -19,15 +19,15 @@ class AppUser {
   final DateTime? createdAt, lastSeen;
   final bool isActive;
   factory AppUser.fromMap(String id, Map<String, dynamic> data) => AppUser(
-        uid: id,
-        fullName: data['fullName'] ?? '',
-        email: data['email'] ?? '',
-        studentNumber: data['studentNumber'],
-        photoUrl: data['photoUrl'],
-        createdAt: dateFrom(data['createdAt']),
-        lastSeen: dateFrom(data['lastSeen']),
-        isActive: data['isActive'] ?? true,
-      );
+    uid: id,
+    fullName: data['fullName'] ?? '',
+    email: data['email'] ?? '',
+    studentNumber: data['studentNumber'],
+    photoUrl: data['photoUrl'],
+    createdAt: dateFrom(data['createdAt']),
+    lastSeen: dateFrom(data['lastSeen']),
+    isActive: data['isActive'] ?? true,
+  );
 }
 
 class Group {
@@ -60,21 +60,21 @@ class Group {
   final String? repositoryUrl, repositoryName;
   final bool isLocked;
   factory Group.fromMap(String id, Map<String, dynamic> data) => Group(
-        id: id,
-        name: data['name'] ?? '',
-        course: data['course'] ?? '',
-        leaderId: data['leaderId'] ?? '',
-        code: data['code'] ?? '',
-        description: data['description'] ?? '',
-        courseworkTitle: data['courseworkTitle'] ?? '',
-        maxMembers: (data['maxMembers'] ?? 1) as int,
-        joinType: data['joinType'] ?? 'open',
-        deadline: dateFrom(data['deadline']),
-        repositoryUrl: data['repositoryUrl'],
-        repositoryName: data['repositoryName'],
-        isLocked: data['isLocked'] ?? false,
-        createdAt: dateFrom(data['createdAt']),
-      );
+    id: id,
+    name: data['name'] ?? '',
+    course: data['course'] ?? '',
+    leaderId: data['leaderId'] ?? '',
+    code: data['code'] ?? '',
+    description: data['description'] ?? '',
+    courseworkTitle: data['courseworkTitle'] ?? '',
+    maxMembers: (data['maxMembers'] ?? 1) as int,
+    joinType: data['joinType'] ?? 'open',
+    deadline: dateFrom(data['deadline']),
+    repositoryUrl: data['repositoryUrl'],
+    repositoryName: data['repositoryName'],
+    isLocked: data['isLocked'] ?? false,
+    createdAt: dateFrom(data['createdAt']),
+  );
 }
 
 class Project {
@@ -96,16 +96,16 @@ class Project {
   bool get isCompleted => status == 'completed';
   bool get isArchived => status == 'archived';
   factory Project.fromMap(String id, Map<String, dynamic> data) => Project(
-        id: id,
-        groupId: data['groupId'] ?? '',
-        title: data['title'] ?? '',
-        description: data['description'] ?? '',
-        deadline: dateFrom(data['deadline']),
-        status: data['status'] ?? 'active',
-        createdBy: data['createdBy'] ?? '',
-        createdAt: dateFrom(data['createdAt']),
-        updatedAt: dateFrom(data['updatedAt']),
-      );
+    id: id,
+    groupId: data['groupId'] ?? '',
+    title: data['title'] ?? '',
+    description: data['description'] ?? '',
+    deadline: dateFrom(data['deadline']),
+    status: data['status'] ?? 'active',
+    createdBy: data['createdBy'] ?? '',
+    createdAt: dateFrom(data['createdAt']),
+    updatedAt: dateFrom(data['updatedAt']),
+  );
 }
 
 class Membership {
@@ -157,24 +157,22 @@ class GroupTask {
   final DateTime? deadline, createdAt, completedAt;
   bool get completed => status == 'completed';
   bool get isOverdue =>
-      !completed &&
-      deadline != null &&
-      deadline!.isBefore(DateTime.now());
+      !completed && deadline != null && deadline!.isBefore(DateTime.now());
   factory GroupTask.fromMap(String id, Map<String, dynamic> data) => GroupTask(
-        id: id,
-        projectId: data['projectId'] ?? data['groupId'] ?? '',
-        groupId: data['groupId'] ?? '',
-        title: data['title'] ?? '',
-        description: data['description'] ?? '',
-        status: data['status'] ?? 'notStarted',
-        priority: data['priority'] ?? 'medium',
-        createdBy: data['createdBy'] ?? '',
-        assignedTo: data['assignedTo'],
-        assignedName: data['assignedName'] ?? '',
-        createdAt: dateFrom(data['createdAt']),
-        completedAt: dateFrom(data['completedAt']),
-        deadline: dateFrom(data['deadline']),
-      );
+    id: id,
+    projectId: data['projectId'] ?? data['groupId'] ?? '',
+    groupId: data['groupId'] ?? '',
+    title: data['title'] ?? '',
+    description: data['description'] ?? '',
+    status: data['status'] ?? 'notStarted',
+    priority: data['priority'] ?? 'medium',
+    createdBy: data['createdBy'] ?? '',
+    assignedTo: data['assignedTo'],
+    assignedName: data['assignedName'] ?? '',
+    createdAt: dateFrom(data['createdAt']),
+    completedAt: dateFrom(data['completedAt']),
+    deadline: dateFrom(data['deadline']),
+  );
 }
 
 class GroupNote {
@@ -191,15 +189,15 @@ class GroupNote {
   final String id, projectId, groupId, title, content, updatedBy;
   final DateTime? updatedAt, createdAt;
   factory GroupNote.fromMap(String id, Map<String, dynamic> data) => GroupNote(
-        id: id,
-        projectId: data['projectId'] ?? data['groupId'] ?? '',
-        groupId: data['groupId'] ?? '',
-        title: data['title'] ?? '',
-        content: data['content'] ?? '',
-        updatedBy: data['updatedBy'] ?? '',
-        updatedAt: dateFrom(data['updatedAt']),
-        createdAt: dateFrom(data['createdAt']),
-      );
+    id: id,
+    projectId: data['projectId'] ?? data['groupId'] ?? '',
+    groupId: data['groupId'] ?? '',
+    title: data['title'] ?? '',
+    content: data['content'] ?? '',
+    updatedBy: data['updatedBy'] ?? '',
+    updatedAt: dateFrom(data['updatedAt']),
+    createdAt: dateFrom(data['createdAt']),
+  );
 }
 
 class WorkspaceFile {
@@ -284,14 +282,14 @@ class Comment {
   final String authorName;
   final DateTime? createdAt;
   factory Comment.fromMap(String id, Map<String, dynamic> data) => Comment(
-        id: id,
-        postId: data['postId'] ?? '',
-        groupId: data['groupId'] ?? '',
-        authorId: data['authorId'] ?? '',
-        authorName: data['authorName'] ?? '',
-        content: data['content'] ?? '',
-        createdAt: dateFrom(data['createdAt']),
-      );
+    id: id,
+    postId: data['postId'] ?? '',
+    groupId: data['groupId'] ?? '',
+    authorId: data['authorId'] ?? '',
+    authorName: data['authorName'] ?? '',
+    content: data['content'] ?? '',
+    createdAt: dateFrom(data['createdAt']),
+  );
 }
 
 class Announcement {
@@ -362,17 +360,12 @@ class Submission {
     this.repositoryUrl,
     this.authorName = '',
   });
-  final String id,
-      projectId,
-      groupId,
-      submittedBy,
-      title,
-      description,
-      status;
+  final String id, projectId, groupId, submittedBy, title, description, status;
   final String? fileUrl, repositoryUrl;
   final DateTime? createdAt, submittedAt;
   final String authorName;
-  factory Submission.fromMap(String id, Map<String, dynamic> data) => Submission(
+  factory Submission.fromMap(String id, Map<String, dynamic> data) =>
+      Submission(
         id: id,
         projectId: data['projectId'] ?? data['groupId'] ?? '',
         groupId: data['groupId'] ?? '',

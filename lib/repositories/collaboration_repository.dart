@@ -71,7 +71,11 @@ class CollaborationRepository {
     return url;
   }
 
-  Future<void> deleteFile(WorkspaceFile file, String actorId, bool isLeader) async {
+  Future<void> deleteFile(
+    WorkspaceFile file,
+    String actorId,
+    bool isLeader,
+  ) async {
     if (!isLeader && file.uploaderId != actorId) {
       throw StateError('Only the leader or uploader can delete files.');
     }
@@ -84,7 +88,8 @@ class CollaborationRepository {
       .where('projectId', isEqualTo: projectId)
       .snapshots()
       .map(
-        (s) => s.docs.map((d) => DiscussionPost.fromMap(d.id, d.data())).toList(),
+        (s) =>
+            s.docs.map((d) => DiscussionPost.fromMap(d.id, d.data())).toList(),
       );
   Future<void> addPost({
     required String groupId,
@@ -113,7 +118,12 @@ class CollaborationRepository {
     });
   }
 
-  Future<void> updatePost(DiscussionPost post, String content, String actorId, bool isLeader) async {
+  Future<void> updatePost(
+    DiscussionPost post,
+    String content,
+    String actorId,
+    bool isLeader,
+  ) async {
     if (post.authorId != actorId && !isLeader) {
       throw StateError('Only the author or leader can edit this post.');
     }
@@ -123,7 +133,11 @@ class CollaborationRepository {
     });
   }
 
-  Future<void> deletePost(DiscussionPost post, String actorId, bool isLeader) async {
+  Future<void> deletePost(
+    DiscussionPost post,
+    String actorId,
+    bool isLeader,
+  ) async {
     if (post.authorId != actorId && !isLeader) {
       throw StateError('Only the author or leader can delete this post.');
     }
@@ -167,7 +181,9 @@ class CollaborationRepository {
       .where('groupId', isEqualTo: groupId)
       .orderBy('createdAt', descending: true)
       .snapshots()
-      .map((s) => s.docs.map((d) => Announcement.fromMap(d.id, d.data())).toList());
+      .map(
+        (s) => s.docs.map((d) => Announcement.fromMap(d.id, d.data())).toList(),
+      );
   Future<String> addAnnouncement({
     required String groupId,
     required String authorId,
@@ -197,7 +213,11 @@ class CollaborationRepository {
     return ref.id;
   }
 
-  Future<void> updateAnnouncement(Announcement announcement, String content, String actorId) async {
+  Future<void> updateAnnouncement(
+    Announcement announcement,
+    String content,
+    String actorId,
+  ) async {
     await _db.collection('announcements').doc(announcement.id).update({
       'content': content.trim(),
       'updatedAt': FieldValue.serverTimestamp(),
@@ -213,7 +233,11 @@ class CollaborationRepository {
     });
   }
 
-  Future<void> deleteAnnouncement(String id, String groupId, String actorId) async {
+  Future<void> deleteAnnouncement(
+    String id,
+    String groupId,
+    String actorId,
+  ) async {
     await _db.collection('announcements').doc(id).delete();
     await _db.collection('activityLogs').add({
       'groupId': groupId,
@@ -277,37 +301,41 @@ class CollaborationRepository {
     required String description,
     String? fileUrl,
     required String status,
-  }) =>
-      submit(
-        project: project,
-        authorId: authorId,
-        authorName: authorName,
-        title: title,
-        description: description,
-        fileUrl: fileUrl,
-        status: status,
-      );
+  }) => submit(
+    project: project,
+    authorId: authorId,
+    authorName: authorName,
+    title: title,
+    description: description,
+    fileUrl: fileUrl,
+    status: status,
+  );
 
   Stream<List<Submission>> submissions(String projectId) => _db
       .collection('submissions')
       .where('projectId', isEqualTo: projectId)
       .orderBy('submittedAt', descending: true)
       .snapshots()
-      .map((s) => s.docs.map((d) => Submission.fromMap(d.id, d.data())).toList());
+      .map(
+        (s) => s.docs.map((d) => Submission.fromMap(d.id, d.data())).toList(),
+      );
 
   Stream<List<ActivityLog>> activityLogs(String groupId) => _db
       .collection('activityLogs')
       .where('groupId', isEqualTo: groupId)
       .orderBy('createdAt', descending: true)
       .snapshots()
-      .map((s) => s.docs.map((d) => ActivityLog.fromMap(d.id, d.data())).toList());
+      .map(
+        (s) => s.docs.map((d) => ActivityLog.fromMap(d.id, d.data())).toList(),
+      );
   Stream<List<AppNotification>> notifications(String uid) => _db
       .collection('notifications')
       .where('userId', isEqualTo: uid)
       .orderBy('createdAt', descending: true)
       .snapshots()
       .map(
-        (s) => s.docs.map((d) => AppNotification.fromMap(d.id, d.data())).toList(),
+        (s) =>
+            s.docs.map((d) => AppNotification.fromMap(d.id, d.data())).toList(),
       );
   Future<void> markRead(String id) =>
       _db.collection('notifications').doc(id).update({'isRead': true});

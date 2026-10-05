@@ -31,9 +31,7 @@ class NoteVersionsScreen extends ConsumerWidget {
                   return ListTile(
                     leading: const Icon(Icons.history),
                     title: Text(
-                      v.editedByName.isNotEmpty
-                          ? v.editedByName
-                          : 'Someone',
+                      v.editedByName.isNotEmpty ? v.editedByName : 'Someone',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     subtitle: Text(dateStr),
@@ -64,9 +62,7 @@ class NoteVersionsScreen extends ConsumerWidget {
         content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
-            child: Text(
-              version.content.isEmpty ? '(empty)' : version.content,
-            ),
+            child: Text(version.content.isEmpty ? '(empty)' : version.content),
           ),
         ),
         actions: [

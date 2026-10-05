@@ -133,37 +133,37 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   }
 
   Widget _commentTile(Comment comment) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 14,
-            child: Text(
-              comment.authorName.isNotEmpty
-                  ? comment.authorName[0].toUpperCase()
-                  : '?',
-              style: const TextStyle(fontSize: 12),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CircleAvatar(
+        radius: 14,
+        child: Text(
+          comment.authorName.isNotEmpty
+              ? comment.authorName[0].toUpperCase()
+              : '?',
+          style: const TextStyle(fontSize: 12),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              comment.authorName.isNotEmpty ? comment.authorName : 'Someone',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  comment.authorName.isNotEmpty ? comment.authorName : 'Someone',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                Text(
-                  _formatTime(comment.createdAt),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 4),
-                Text(comment.content),
-              ],
+            Text(
+              _formatTime(comment.createdAt),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
-          ),
-        ],
-      );
+            const SizedBox(height: 4),
+            Text(comment.content),
+          ],
+        ),
+      ),
+    ],
+  );
 
   String _formatTime(DateTime? dt) {
     if (dt == null) return '';
@@ -181,7 +181,9 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     if (user == null) return;
     setState(() => sending = true);
     try {
-      await ref.read(collaborationRepositoryProvider).addComment(
+      await ref
+          .read(collaborationRepositoryProvider)
+          .addComment(
             groupId: widget.group.id,
             postId: widget.post.id,
             authorId: user.uid,
@@ -219,14 +221,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
     if (ok != true) return;
     try {
-      await ref.read(collaborationRepositoryProvider).deletePost(
-            widget.post,
-            widget.post.authorId,
-            widget.isLeader,
-          );
+      await ref
+          .read(collaborationRepositoryProvider)
+          .deletePost(widget.post, widget.post.authorId, widget.isLeader);
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Post deleted.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Post deleted.')));
         Navigator.pop(context);
       }
     } catch (e) {

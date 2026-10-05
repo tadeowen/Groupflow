@@ -169,7 +169,9 @@ class _NoteEditorState extends ConsumerState<NoteEditor> {
       return;
     }
     try {
-      await ref.read(workspaceRepositoryProvider).saveNote(
+      await ref
+          .read(workspaceRepositoryProvider)
+          .saveNote(
             groupId: widget.group.id,
             projectId: widget.project.id,
             noteId: widget.note?.id,
@@ -194,50 +196,46 @@ class _NoteEditorState extends ConsumerState<NoteEditor> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(widget.note == null ? 'New note' : widget.note!.title),
-          actions: [
-            if (widget.note != null)
-              IconButton(
-                icon: const Icon(Icons.history_outlined),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        NoteVersionsScreen(note: widget.note!),
-                  ),
-                ),
+    appBar: AppBar(
+      title: Text(widget.note == null ? 'New note' : widget.note!.title),
+      actions: [
+        if (widget.note != null)
+          IconButton(
+            icon: const Icon(Icons.history_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NoteVersionsScreen(note: widget.note!),
               ),
-            IconButton(onPressed: save, icon: const Icon(Icons.save_outlined)),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(
-                status,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: title,
-                style: Theme.of(context).textTheme.titleMedium,
-                decoration: const InputDecoration(hintText: 'Note title'),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: TextField(
-                  controller: content,
-                  expands: true,
-                  maxLines: null,
-                  minLines: null,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: const InputDecoration(hintText: 'Start writing…'),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      );
+        IconButton(onPressed: save, icon: const Icon(Icons.save_outlined)),
+      ],
+    ),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text(status, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 8),
+          TextField(
+            controller: title,
+            style: Theme.of(context).textTheme.titleMedium,
+            decoration: const InputDecoration(hintText: 'Note title'),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: TextField(
+              controller: content,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              textAlignVertical: TextAlignVertical.top,
+              decoration: const InputDecoration(hintText: 'Start writing…'),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

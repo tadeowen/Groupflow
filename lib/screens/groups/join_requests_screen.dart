@@ -38,13 +38,17 @@ class JoinRequestsScreen extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.check_circle_outline,
-                              color: Colors.green),
+                          icon: const Icon(
+                            Icons.check_circle_outline,
+                            color: Colors.green,
+                          ),
                           onPressed: () => _approve(context, ref, r),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.cancel_outlined,
-                              color: Colors.red),
+                          icon: const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.red,
+                          ),
                           onPressed: () => _reject(context, ref, r),
                         ),
                       ],
@@ -75,7 +79,9 @@ class JoinRequestsScreen extends ConsumerWidget {
       return;
     }
     try {
-      await ref.read(groupRepositoryProvider).approveJoinRequest(
+      await ref
+          .read(groupRepositoryProvider)
+          .approveJoinRequest(
             groupId: group.id,
             userId: request.userId,
             userName: request.fullName,
@@ -83,9 +89,7 @@ class JoinRequestsScreen extends ConsumerWidget {
           );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${request.fullName} approved.'),
-          ),
+          SnackBar(content: Text('${request.fullName} approved.')),
         );
       }
     } catch (e) {
@@ -109,9 +113,7 @@ class JoinRequestsScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Reject join request?'),
-        content: Text(
-          'Reject "${request.fullName}"\'s request to join?',
-        ),
+        content: Text('Reject "${request.fullName}"\'s request to join?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -129,7 +131,9 @@ class JoinRequestsScreen extends ConsumerWidget {
     );
     if (ok != true) return;
     try {
-      await ref.read(groupRepositoryProvider).rejectJoinRequest(
+      await ref
+          .read(groupRepositoryProvider)
+          .rejectJoinRequest(
             groupId: group.id,
             userId: request.userId,
             rejecter: user,

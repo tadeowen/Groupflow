@@ -106,9 +106,7 @@ class DashboardPage extends ConsumerWidget {
                 ),
               )
             else
-              ...items.map(
-                (m) => _DashboardGroupTile(membership: m),
-              ),
+              ...items.map((m) => _DashboardGroupTile(membership: m)),
             const SizedBox(height: 26),
             Wrap(
               spacing: 10,
@@ -135,15 +133,15 @@ class DashboardPage extends ConsumerWidget {
             ),
           ],
         ),
-         loading: () => const Center(child: CircularProgressIndicator()),
-         error: (e, _) => const EmptyState(
-           icon: Icons.cloud_off,
-           title: 'Unable to load groups',
-           message: 'Please check your connection and try again.',
-         ),
-       ),
-     );
-   }
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => const EmptyState(
+          icon: Icons.cloud_off,
+          title: 'Unable to load groups',
+          message: 'Please check your connection and try again.',
+        ),
+      ),
+    );
+  }
 }
 
 class _DashboardGroupTile extends ConsumerWidget {
@@ -156,17 +154,13 @@ class _DashboardGroupTile extends ConsumerWidget {
     return Card(
       child: ListTile(
         title: Text(group.name),
-        subtitle: Text(
-          membership.isLeader ? 'Group leader' : 'Group member',
-        ),
+        subtitle: Text(membership.isLeader ? 'Group leader' : 'Group member'),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => GroupDetailScreen(
-              groupId: group.id,
-              membership: membership,
-            ),
+            builder: (_) =>
+                GroupDetailScreen(groupId: group.id, membership: membership),
           ),
         ),
       ),
@@ -190,8 +184,7 @@ class NotificationsPage extends ConsumerWidget {
             ? const EmptyState(
                 icon: Icons.notifications_none,
                 title: 'You’re all caught up',
-                message:
-                    'Task assignments and announcements will appear here.',
+                message: 'Task assignments and announcements will appear here.',
               )
             : ListView.builder(
                 itemCount: items.length,

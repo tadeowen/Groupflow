@@ -152,7 +152,9 @@ class _DiscussionPageState extends ConsumerState<DiscussionPage> {
     if (user == null) return;
     setState(() => sending = true);
     try {
-      await ref.read(collaborationRepositoryProvider).addPost(
+      await ref
+          .read(collaborationRepositoryProvider)
+          .addPost(
             groupId: widget.group.id,
             projectId: widget.project.id,
             authorId: user.uid,

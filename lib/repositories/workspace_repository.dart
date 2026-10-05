@@ -16,7 +16,9 @@ class WorkspaceRepository {
       .where('noteId', isEqualTo: noteId)
       .orderBy('editedAt', descending: true)
       .snapshots()
-      .map((s) => s.docs.map((d) => NoteVersion.fromMap(d.id, d.data())).toList());
+      .map(
+        (s) => s.docs.map((d) => NoteVersion.fromMap(d.id, d.data())).toList(),
+      );
 
   Future<void> saveNote({
     required String groupId,
@@ -41,20 +43,16 @@ class WorkspaceRepository {
         'editedAt': FieldValue.serverTimestamp(),
       });
     }
-    batch.set(
-      ref,
-      {
-        'groupId': groupId,
-        'projectId': projectId,
-        'title': title.trim(),
-        'content': content,
-        'updatedBy': editorId,
-        'updatedByName': editorName,
-        'updatedAt': FieldValue.serverTimestamp(),
-        if (!old.exists) 'createdAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    batch.set(ref, {
+      'groupId': groupId,
+      'projectId': projectId,
+      'title': title.trim(),
+      'content': content,
+      'updatedBy': editorId,
+      'updatedByName': editorName,
+      'updatedAt': FieldValue.serverTimestamp(),
+      if (!old.exists) 'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
     batch.set(_db.collection('activityLogs').doc(), {
       'groupId': groupId,
       'projectId': projectId,

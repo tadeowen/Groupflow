@@ -32,8 +32,9 @@ class ProfileScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 38,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.surfaceContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainer,
                   child: profile.photoUrl != null
                       ? CircleAvatar(
                           radius: 36,
@@ -57,7 +58,8 @@ class ProfileScreen extends ConsumerWidget {
                   child: Text(
                     profile.email,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 if (profile.studentNumber != null)
@@ -66,13 +68,9 @@ class ProfileScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         'Student #${profile.studentNumber}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ),
@@ -83,8 +81,7 @@ class ProfileScreen extends ConsumerWidget {
                       ListTile(
                         leading: const Icon(Icons.badge_outlined),
                         title: const Text('Student number'),
-                        subtitle:
-                            Text(profile.studentNumber ?? 'Not added'),
+                        subtitle: Text(profile.studentNumber ?? 'Not added'),
                       ),
                       const Divider(height: 1),
                       ListTile(
@@ -132,15 +129,11 @@ class ProfileScreen extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'We will send a password reset link to your email.',
-            ),
+            const Text('We will send a password reset link to your email.'),
             const SizedBox(height: 16),
             TextField(
               controller: emailCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
+              decoration: const InputDecoration(labelText: 'Email'),
               keyboardType: TextInputType.emailAddress,
             ),
           ],
@@ -162,8 +155,9 @@ class ProfileScreen extends ConsumerWidget {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content:
-                          Text('Password reset email sent. Check your inbox.'),
+                      content: Text(
+                        'Password reset email sent. Check your inbox.',
+                      ),
                     ),
                   );
                 }
@@ -188,8 +182,9 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final name = TextEditingController(text: widget.user.fullName);
-  late final student =
-      TextEditingController(text: widget.user.studentNumber ?? '');
+  late final student = TextEditingController(
+    text: widget.user.studentNumber ?? '',
+  );
   bool loading = false;
   @override
   void dispose() {
@@ -200,33 +195,29 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Edit profile')),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: name,
-                decoration: const InputDecoration(labelText: 'Full name'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: student,
-                decoration: const InputDecoration(
-                  labelText: 'Student number (optional)',
-                ),
-              ),
-              const SizedBox(height: 24),
-              AppButton(
-                label: 'Save',
-                loading: loading,
-                onPressed: save,
-              ),
-            ],
+    appBar: AppBar(title: const Text('Edit profile')),
+    body: Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: name,
+            decoration: const InputDecoration(labelText: 'Full name'),
           ),
-        ),
-      );
+          const SizedBox(height: 12),
+          TextField(
+            controller: student,
+            decoration: const InputDecoration(
+              labelText: 'Student number (optional)',
+            ),
+          ),
+          const SizedBox(height: 24),
+          AppButton(label: 'Save', loading: loading, onPressed: save),
+        ],
+      ),
+    ),
+  );
 
   Future<void> save() async {
     if (name.text.trim().isEmpty) {
@@ -235,16 +226,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
     setState(() => loading = true);
     try {
-      await ref.read(authRepositoryProvider).updateProfile(
+      await ref
+          .read(authRepositoryProvider)
+          .updateProfile(
             uid: widget.user.uid,
             fullName: name.text,
-            studentNumber:
-                student.text.trim().isEmpty ? null : student.text.trim(),
+            studentNumber: student.text.trim().isEmpty
+                ? null
+                : student.text.trim(),
           );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Profile updated.')));
         Navigator.pop(context);
       }
     } catch (e) {

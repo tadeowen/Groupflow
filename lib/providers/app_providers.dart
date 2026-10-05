@@ -53,26 +53,29 @@ final membersProvider = StreamProvider.family<List<Membership>, String>(
 );
 final pendingJoinRequestsProvider =
     StreamProvider.family<List<JoinRequest>, String>(
-  (ref, groupId) => ref.watch(groupRepositoryProvider).joinRequests(groupId),
-);
+      (ref, groupId) =>
+          ref.watch(groupRepositoryProvider).joinRequests(groupId),
+    );
 final projectTasksProvider = StreamProvider.family<List<GroupTask>, String>(
   (ref, projectId) => ref.watch(taskRepositoryProvider).projectTasks(projectId),
 );
 final assignedTasksProvider = StreamProvider.family<List<GroupTask>, String>(
   (ref, uid) => ref.watch(taskRepositoryProvider).assignedTasks(uid),
 );
-final projectProgressProvider =
-    StreamProvider.family<int, String>((ref, projectId) =>
-        ref.watch(taskRepositoryProvider).projectProgress(projectId));
+final projectProgressProvider = StreamProvider.family<int, String>(
+  (ref, projectId) =>
+      ref.watch(taskRepositoryProvider).projectProgress(projectId),
+);
 final notesProvider = StreamProvider.family<List<GroupNote>, String>(
-  (ref, projectId) => ref.watch(workspaceRepositoryProvider).projectNotes(projectId),
+  (ref, projectId) =>
+      ref.watch(workspaceRepositoryProvider).projectNotes(projectId),
 );
 final noteVersionsProvider = StreamProvider.family<List<NoteVersion>, String>(
-  (ref, noteId) =>
-      ref.watch(workspaceRepositoryProvider).noteVersions(noteId),
+  (ref, noteId) => ref.watch(workspaceRepositoryProvider).noteVersions(noteId),
 );
 final filesProvider = StreamProvider.family<List<WorkspaceFile>, String>(
-  (ref, projectId) => ref.watch(collaborationRepositoryProvider).projectFiles(projectId),
+  (ref, projectId) =>
+      ref.watch(collaborationRepositoryProvider).projectFiles(projectId),
 );
 final postsProvider = StreamProvider.family<List<DiscussionPost>, String>(
   (ref, projectId) =>
@@ -82,9 +85,10 @@ final commentsProvider = StreamProvider.family<List<Comment>, String>(
   (ref, postId) =>
       ref.watch(collaborationRepositoryProvider).postComments(postId),
 );
-final announcementsProvider =
-    StreamProvider.family<List<Announcement>, String>((ref, groupId) =>
-        ref.watch(collaborationRepositoryProvider).announcements(groupId));
+final announcementsProvider = StreamProvider.family<List<Announcement>, String>(
+  (ref, groupId) =>
+      ref.watch(collaborationRepositoryProvider).announcements(groupId),
+);
 final submissionsProvider = StreamProvider.family<List<Submission>, String>(
   (ref, projectId) =>
       ref.watch(collaborationRepositoryProvider).submissions(projectId),
@@ -95,5 +99,6 @@ final activityLogsProvider = StreamProvider.family<List<ActivityLog>, String>(
 );
 final notificationsProvider =
     StreamProvider.family<List<AppNotification>, String>(
-      (ref, uid) => ref.watch(collaborationRepositoryProvider).notifications(uid),
+      (ref, uid) =>
+          ref.watch(collaborationRepositoryProvider).notifications(uid),
     );

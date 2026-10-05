@@ -27,8 +27,9 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final existingSubmissions =
-        ref.watch(submissionsProvider(widget.project.id));
+    final existingSubmissions = ref.watch(
+      submissionsProvider(widget.project.id),
+    );
     return Scaffold(
       appBar: AppBar(title: const Text('Submit coursework')),
       body: existingSubmissions.when(
@@ -43,26 +44,29 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
-                ...subs.map((s) => ListTile(
-                      leading: const Icon(Icons.history),
-                      title: Text(s.title),
-                      subtitle: Text(
-                        '${s.status.toUpperCase()} • ${_formatDate(s.submittedAt)}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    )),
+                ...subs.map(
+                  (s) => ListTile(
+                    leading: const Icon(Icons.history),
+                    title: Text(s.title),
+                    subtitle: Text(
+                      '${s.status.toUpperCase()} • ${_formatDate(s.submittedAt)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
               ],
               TextField(
                 controller: title,
-                decoration: const InputDecoration(labelText: 'Submission title'),
+                decoration: const InputDecoration(
+                  labelText: 'Submission title',
+                ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: description,
                 maxLines: 4,
-                decoration:
-                    const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
@@ -165,13 +169,17 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload file: ${friendlyError(e)}')),
+            SnackBar(
+              content: Text('Failed to upload file: ${friendlyError(e)}'),
+            ),
           );
         }
       }
     }
     try {
-      await ref.read(collaborationRepositoryProvider).submitDirect(
+      await ref
+          .read(collaborationRepositoryProvider)
+          .submitDirect(
             project: widget.project,
             authorId: user.uid,
             authorName: user.fullName,
